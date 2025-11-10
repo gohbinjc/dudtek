@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DUDTEK Alpha – Customer Tutorials</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Simple JS gate – replace the password with something you share with customers
+        const PASSWORD = "DUDTEK2025";
+
+        function checkPass() {
+            const entered = prompt("Enter customer password:");
+            if (entered === PASSWORD) {
+                document.getElementById('locked').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            } else {
+                alert("❌ Wrong password – access denied.");
+                // Optional: redirect back to home
+                window.location.href = "index.html";
+            }
+        }
+
+        // Run as soon as the page loads
+        window.onload = checkPass;
+    </script>
+</head>
+<body>
+<header class="hero">
+    <h1>DUDTEK Alpha – Customer Tutorials</h1>
+</header>
+
+<div id="locked" style="display:none;"></div>
+
+<div id="content" style="display:none;">
+    <main class="tutorials">
+        <section>
+            <h2>Installation Guide</h2>
+            <p>Download the PDF <a href="assets/installation.pdf" target="_blank">Installation Guide</a> and follow the step‑by‑step instructions.</p>
+        </section>
+
+        <section>
+            <h2>Calibration Procedure</h2>
+            <p>Watch the video tutorial <a href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID" target="_blank">Calibration Walk‑through</a>.</p>
+        </section>
+
+        <section>
+            <h2>Troubleshooting FAQ</h2>
+            <ul>
+                <li>Why does the sensor read “no vacuum”? – Check the seal integrity.</li>
+                <li>Touch screen unresponsive? – Perform a soft reset (hold power 5 seconds).</li>
+                <!-- Add more as needed -->
+            </ul>
+        </section>
+    </main>
+</div>
+
+<footer>
+    <p>&copy; 2025 DUDTEK. All rights reserved.</p>
+</footer>
+</body>
+</html>
