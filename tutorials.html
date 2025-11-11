@@ -3,24 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>DUDTEK Alpha – Customer Tutorials</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="style.css">
     <script>
-        // Simple JS gate – replace the password with something you share with customers
-        const PASSWORD = "DUDTEK2025";
+        // Client-side protection using a stored hash (NOT cryptographically secure for secret material).
+        // Replace PASSWORD_HASH with the SHA-256 hex digest of the real password.
+        // Optionally set SALT to a short secret (string) and include it when hashing (adds small extra obscurity).
+        const PASSWORD_HASH = "b713549c9bf85fad3e61b21fc7e7018bd660fef9e44314ea6a17e0abd1d6a3ab"; // e.g. "3e2a..."
+        const SALT = "optional-salt-string"; // replace or set to "" if you don't want a salt
+        const SESSION_KEY = "dudtek_tutorials_auth";
 
-        function checkPass() {
+        async function sha256Hex(str) {
+            const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+        }
+
+        async function checkPass() {
+            // If already authenticated in this session, reveal
+            if (sessionStorage.getItem(SESSION_KEY) === "1") {
+                showContent();
+                return;
+            }
+
             const entered = prompt("Enter customer password:");
-            if (entered === PASSWORD) {
-                document.getElementById('locked').style.display = 'none';
-                document.getElementById('content').style.display = 'block';
+            if (!entered) {
+                // no input, go home
+                window.location.href = "index.html";
+                return;
+            }
+
+            const candidate = await sha256Hex(SALT + entered);
+            if (candidate === PASSWORD_HASH) {
+                sessionStorage.setItem(SESSION_KEY, "1");
+                showContent();
             } else {
                 alert("❌ Wrong password – access denied.");
-                // Optional: redirect back to home
                 window.location.href = "index.html";
             }
         }
 
-        // Run as soon as the page loads
+        function showContent() {
+            const locked = document.getElementById('locked');
+            const content = document.getElementById('content');
+            if (locked) locked.style.display = 'none';
+            if (content) content.style.display = 'block';
+        }
+
         window.onload = checkPass;
     </script>
 </head>
@@ -35,12 +63,12 @@
     <main class="tutorials">
         <section>
             <h2>Installation Guide</h2>
-            <p>Download the PDF <a href="assets/schema.jpeg" target="_blank">Installation Guide</a> and follow the step‑by‑step instructions.</p>
+            <p>Download the PDF <a href="assets/schema.jpeg" target="_blank" rel="noopener">Installation Guide</a> and follow the step‑by‑step instructions.</p>
         </section>
 
         <section>
             <h2>Calibration Procedure</h2>
-            <p>Watch the video tutorial <a href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID" target="_blank">Calibration Walk‑through</a>.</p>
+            <p>Watch the video tutorial <a href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID" target="_blank" rel="noopener">Calibration Walk‑through</a>.</p>
         </section>
 
         <section>
